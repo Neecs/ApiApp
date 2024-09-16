@@ -2,32 +2,26 @@ package com.neecs.apiapp
 
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.neecs.apiapp.databinding.CharacterItemBinding
 
 class CharactersAdapter(private var dataList: List<Character>) : RecyclerView.Adapter<CharactersAdapter.ViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val characterImage: ImageView = itemView.findViewById(R.id.characterImage)
-        val characterName: TextView = itemView.findViewById(R.id.characterName)
-    }
+    class ViewHolder(val binding: CharacterItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.character_item, parent, false)
-        return ViewHolder(view)
+        val binding = CharacterItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val character = dataList[position]
-        holder.characterName.text = character.name
+        holder.binding.characterName.text = character.name
         Glide.with(holder.itemView.context)
             .load(character.imageUrl)
-            .into(holder.characterImage)
+            .into(holder.binding.characterImage)
 
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context

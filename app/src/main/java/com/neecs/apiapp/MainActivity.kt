@@ -1,37 +1,39 @@
 package com.neecs.apiapp
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.neecs.apiapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: CharactersAdapter
+
+    private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var adapter: CharactersAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        // Initialize the adapter with an empty list
         adapter = CharactersAdapter(emptyList())
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
 
         viewModel.uiState.observe(this, Observer { uiState ->
             when (uiState) {
                 is UiState.Loading -> {
-                    // Show loading indicator
+                    // Show loading state
                 }
                 is UiState.Success -> {
+                    // Update RecyclerView with data
                     adapter.updateData(uiState.data)
                 }
                 is UiState.Error -> {
-                    Toast.makeText(this, uiState.message, Toast.LENGTH_SHORT).show()
+                    // Show error message
                 }
             }
         })
