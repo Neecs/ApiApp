@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ApiApp</string>
+    <string name="app_name">Disney Characters</string>
+    <string name="character_image_desc">Character Image</string>
 </resources>
