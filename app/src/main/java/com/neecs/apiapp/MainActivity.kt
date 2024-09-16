@@ -1,6 +1,7 @@
 package com.neecs.apiapp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -18,14 +19,23 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = CharactersAdapter(emptyList())
+        recyclerView.adapter = adapter
 
-        // Observe the characters LiveData from the ViewModel
-        viewModel.characters.observe(this, Observer { characters ->
-            adapter = CharactersAdapter(characters)
-            recyclerView.adapter = adapter
+        viewModel.uiState.observe(this, Observer { uiState ->
+            when (uiState) {
+                is UiState.Loading -> {
+                    // Show loading indicator
+                }
+                is UiState.Success -> {
+                    adapter.updateData(uiState.data)
+                }
+                is UiState.Error -> {
+                    Toast.makeText(this, uiState.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         })
 
-        // Fetch characters from the API
         viewModel.fetchCharacters()
     }
 }

@@ -8,21 +8,22 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel : ViewModel() {
-    // LiveData to hold the list of characters
-    private val _characters = MutableLiveData<List<Character>>()
-    val characters: LiveData<List<Character>> get() = _characters
+    private val _uiState = MutableLiveData<UiState<List<Character>>>()
+    val uiState: LiveData<UiState<List<Character>>> get() = _uiState
 
-    // Function to fetch characters from the API
     fun fetchCharacters() {
+        _uiState.value = UiState.Loading
         RetrofitClient.instance.getCharacters().enqueue(object : Callback<DisneyApiResponse> {
             override fun onResponse(call: Call<DisneyApiResponse>, response: Response<DisneyApiResponse>) {
                 if (response.isSuccessful) {
-                    _characters.value = response.body()?.data ?: emptyList()
+                    _uiState.value = UiState.Success(response.body()?.data ?: emptyList())
+                } else {
+                    _uiState.value = UiState.Error("Error fetching data")
                 }
             }
 
             override fun onFailure(call: Call<DisneyApiResponse>, t: Throwable) {
-                // Handle failure
+                _uiState.value = UiState.Error(t.message ?: "Unknown error")
             }
         })
     }
