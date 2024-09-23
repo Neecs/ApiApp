@@ -18,10 +18,10 @@ class CharactersAdapter(private var dataList: List<Character>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val character = dataList[position]
-        holder.binding.characterName.text = character.name
+        holder.binding.characterNameTextView.text = character.name
         Glide.with(holder.itemView.context)
             .load(character.imageUrl)
-            .into(holder.binding.characterImage)
+            .into(holder.binding.characterImageView)
 
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
